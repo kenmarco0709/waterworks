@@ -1,0 +1,139 @@
+{% extends 'content.html.twig' %}
+
+{% block pageContent %}
+    
+    <div class="content-wrapper" style="min-height: 847px;">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">{{ page_title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item "><a href="{{ path('client_index')}}">Client</a></li>
+                            <li class="breadcrumb-item "><a href="{{ path('client_details', { id : clientMeter.client.idencoded})}}">Client Details</a></li>
+                            <li class="breadcrumb-item active">{{ page_title }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card card-primary">
+                            <div class="card-body" id='meterDetail'></div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header p-2">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item"><a class="nav-link active" href="#readings" data-toggle="tab">Reading</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#payments" data-toggle="tab">Payment</a></li>
+                                </ul>
+                            </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="readings">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {% include 'flash_message.html.twig' %}
+                                                {% if userData.type == 'Super Admin' or 'Client Details Meter Details Reading' in userData.accesses %}
+                                                    <div  class="dataTables_wrapper dt-bootstrap4">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class='text-right'>
+                                                                    {% if userData.type == 'Super Admin' or  'Client Details Meter Details Reading New' in userData.accesses %}
+                                                                        <a href='javascript:void(0);' class='href-modal' data-id='0' data-action='n' data-type="reading">New Meter Reading</a>
+                                                                    {% endif %} 
+                                                                </div>
+                                                                <table id="clientMeterReading-datalist" class="table dataTable" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Previous Reading</th>
+                                                                            <th>Present Reading</th>
+                                                                            <th>Status</th>
+                                                                            <th>Consume</th>
+                                                                            <th>Billed Amount</th>                                                                            
+                                                                            <th>Reading Date</th>                                                                            
+                                                                            <th>Due Date</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                {% else %}
+                                                    You don't have an access to view this data.
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="payments">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {% include 'flash_message.html.twig' %}
+                                                {% if userData.type == 'Super Admin' or 'Client Details Meter Details Payment' in userData.accesses %}
+                                                    <div  class="dataTables_wrapper dt-bootstrap4">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class='text-right'>
+                                                                    {% if userData.type == 'Super Admin' or  'Client Details Meter Details Payment New' in userData.accesses %}
+                                                                        <a href='javascript:void(0);' class='href-modal' data-id='0' data-action='n' data-type="payment">New Payment</a>
+                                                                    {% endif %} 
+                                                                </div>
+                                                                <table id="clientMeterPayment-datalist" class="table dataTable" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Transaction #</th>
+                                                                            <th>Amount</th>
+                                                                            <th>Payment Type</th>
+                                                                            <th>Reference No.</th>
+                                                                            <th>Payment Date</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                {% else %}
+                                                    You don't have an access to view this data.
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% include 'js.html.twig' %}
+
+    <script language="javascript">
+        //<![CDATA[
+        $(document).ready(function(){
+            client_meter_details.settings.clientMeterId =  '{{ clientMeter.idencoded }}';
+            client_meter_details.settings.ajaxClientMeterDetailUrl = "{{ path('client_meter_ajax_details')}}";
+            client_meter_details.settings.ajaxClientMeterReadingUrl = "{{ path('client_meter_reading_ajax_list')}}";
+            client_meter_details.settings.ajaxClientMeterReadingFormUrl  =  "{{ path('client_meter_reading_ajax_form')}}";
+            client_meter_details.settings.ajaxClientMeterPaymentFormUrl  =  "{{ path('client_meter_payment_ajax_form')}}";
+            client_meter_details.settings.ajaxClientMeterPaymentUrl = "{{ path('client_meter_payment_ajax_list')}}";
+            client_meter_details.init();
+        });
+        //]]>
+    </script>
+{% endblock %}

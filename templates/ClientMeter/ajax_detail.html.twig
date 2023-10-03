@@ -1,0 +1,11 @@
+<div><strong>Name: </strong> {{ clientMeter.client.fullname}}</div>
+<div><strong>Meter Serial No.: </strong> {{ clientMeter.meterSerialNo}}</div>
+<div><strong>Connection Type.: </strong> {{ clientMeter.connectiontype}}</div>
+<div><strong>Purok: </strong> {{ clientMeter.purok ? clientMeter.purok.description : ''}}</div>
+<div><strong>House No.: </strong> {{ clientMeter.houseNo}}</div>
+<div><strong>Old balance before the system: </strong>  {{ clientMeter.oldbalance}}</div>
+<div><strong>Balance From Previous Bill: </strong>  {{ clientMeter.remainingbalance}}</div>
+<div><strong>Current Bill: </strong> {{ lastReading ? (lastReading.status == 'Paid' ? '0.00' : lastReading.billedamount) : '0.00'   }} </div>
+<div><strong>Remaining Balance: </strong> {{ clientMeter.finalbalance }} </div>
+<div><strong>Status: </strong> {{ clientMeter.status}}</div>
+<hr>

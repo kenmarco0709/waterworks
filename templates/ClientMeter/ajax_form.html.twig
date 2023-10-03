@@ -1,0 +1,107 @@
+{% set userData = app.session.get('userData') %} 
+
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">{{ page_title }}</h5>
+</div>
+<div class="modal-body">
+    <div class="card card-primary">
+         <div class="alert alert-danger errors d-none" role="alert" >
+       
+        </div>
+        <div class="alert alert-success success d-none" role="alert" >
+       
+        </div>
+        <div class="card-body">
+            <form id="clientForm">
+                <div class="form-group">
+                    {{ form_label(form.connectionType) }}
+                    {{ form_widget(form.connectionType) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.status) }}
+                    {{ form_widget(form.status) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.purok_desc) }}
+                    {{ form_widget(form.purok_desc) }}
+                    {{ form_widget(form.purok) }}
+                </div>
+                <div class="form-group">
+                     {{ form_label(form.houseNo) }}
+                    {{ form_widget(form.houseNo) }}
+                </div>
+                <div class="form-group">
+                     {{ form_label(form.meterModel) }}
+                    {{ form_widget(form.meterModel) }}
+                </div>
+                <div class="form-group">
+                     {{ form_label(form.meterSerialNo) }}
+                    {{ form_widget(form.meterSerialNo) }}
+                </div>
+                 <div class="form-group">
+                     {{ form_label(form.presentReading) }}
+                    {{ form_widget(form.presentReading) }}
+                </div>
+                <div class="form-group">
+                     {{ form_label(form.oldBalance) }}
+                    {{ form_widget(form.oldBalance) }}
+                </div>
+                <div class="card-footer text-right">
+                    <button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
+                    {% if action == 'u' and (userData.type == 'Super Admin' or 'Client Details Meter Delete' in userData.accesses) %}
+                        <button type="submit" class="ask-continue btn  btn-danger" name="action" value="d"
+                                data-message="Are you sure you want to delete this record?">Delete</button>
+                    {% endif %}
+                   <button type="submit" class="btn just-continue btn-primary" name="action" value="{{ action }}" data-message="Are you sure you want to save this information?">Submit</button>
+                </div>
+
+                {{ form_widget(form.client) }}
+                {{ form_widget(form.action) }}
+                {{ form_widget(form.id) }}
+                {{ form_widget(form._token) }}
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    
+    var clientFormActionUrl = "{{ path('client_meter_ajax_form_process')}}";
+    var purokAutocompleteUrl = "{{ path('purok_autocomplete')}}";
+    global.init();
+
+    global.autocomplete.bind(purokAutocompleteUrl,'#client_meter_form_purok_desc','#client_meter_form_purok');
+
+    $('.close-modal').unbind('click').bind('click',function(){
+        $('.modal').modal('hide');
+    });
+
+    $('#clientForm').submit(function(e){
+
+        e.preventDefault();
+        _this = $(this);
+        _this.find(':input[type=submit]').prop('disabled', true);
+        var formData = $(this).serialize();
+        $.ajax({
+            url: clientFormActionUrl,
+            data: formData, 
+            type: "post",
+            dataType: "JSON",
+            success: function(r){
+                if(r.success){
+
+                    $.toaster({ message : r.msg, title : '', priority : 'success' });
+                    client_details.meterDataList.draw();
+                    $('.modal').modal('hide');
+
+                } else {
+                    $.toaster({ message : r.msg, title : '', priority : 'danger' });
+                    _this.find(':input[type=submit]').prop('disabled', false);
+
+                }
+            }
+        });
+    });
+</script>
